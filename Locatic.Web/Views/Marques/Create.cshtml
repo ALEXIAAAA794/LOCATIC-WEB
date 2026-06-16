@@ -1,0 +1,28 @@
+@model Locatic.Web.Models.Marque
+
+@{
+    ViewData["Title"] = "Créer une marque";
+}
+
+<h1>Créer une marque</h1>
+
+<form asp-action="Create" method="post" class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="Nom" class="form-label"></label>
+        <input asp-for="Nom" class="form-control" />
+        <span asp-validation-for="Nom" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="PaysOrigine" class="form-label"></label>
+        <input asp-for="PaysOrigine" class="form-control" />
+        <span asp-validation-for="PaysOrigine" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Ajouter</button>
+        <a class="btn btn-secondary" asp-action="Index">Retour</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

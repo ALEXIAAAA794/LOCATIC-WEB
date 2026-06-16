@@ -1,0 +1,29 @@
+@model IEnumerable<Locatic.Web.Models.Marque>
+
+@{
+    ViewData["Title"] = "Marques";
+}
+
+<h1>Marques</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Ajouter une marque</a>
+</p>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Pays</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var marque in Model)
+        {
+            <tr>
+                <td>@marque.Nom</td>
+                <td>@marque.PaysOrigine</td>
+            </tr>
+        }
+    </tbody>
+</table>

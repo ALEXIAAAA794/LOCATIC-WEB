@@ -1,0 +1,43 @@
+@model IEnumerable<Locatic.Web.Models.Voiture>
+
+@{
+    ViewData["Title"] = "Voitures";
+}
+
+<h1>Voitures</h1>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Créer une voiture</a>
+</p>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>Immatriculation</th>
+            <th>Marque</th>
+            <th>Modèle</th>
+            <th>Année</th>
+            <th>Tarif / jour</th>
+            <th>Disponible</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var voiture in Model)
+        {
+            <tr>
+                <td>@voiture.Immatriculation</td>
+                <td>@voiture.Modele.Marque.Nom</td>
+                <td>@voiture.Modele.Nom</td>
+                <td>@voiture.Annee</td>
+                <td>@voiture.TarifJournalier.ToString("C")</td>
+                <td>@(voiture.Reservations.Any(r => r.DateDebut <= DateTime.Today && r.DateFin >= DateTime.Today) ? "Non" : "Oui")</td>
+                <td>
+                    <a class="btn btn-sm btn-secondary" asp-action="Details" asp-route-id="@voiture.Id">Détail</a>
+                    <a class="btn btn-sm btn-warning" asp-action="Edit" asp-route-id="@voiture.Id">Modifier</a>
+                    <a class="btn btn-sm btn-danger" asp-action="Delete" asp-route-id="@voiture.Id">Supprimer</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -9,6 +9,7 @@ public class Modele
     [Required, MaxLength(100)]
     public string Nom { get; set; } = string.Empty;
 
+    [Range(1, int.MaxValue, ErrorMessage = "Veuillez sélectionner une marque.")]
     public int MarqueId { get; set; }
     public Marque Marque { get; set; } = null!;
 

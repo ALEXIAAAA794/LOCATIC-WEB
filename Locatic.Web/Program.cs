@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Locatic.Web.Data;
+using Locatic.Web.Repositories;
 using Locatic.Web.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,11 +11,12 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=locatic.db"));
 
-// Injection des services
+// Injection des services et du repository générique
+builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
 builder.Services.AddScoped<IReservationService, ReservationService>();
-// TODO Membre A : builder.Services.AddScoped<IVoitureService, VoitureService>();
-// TODO Membre A : builder.Services.AddScoped<IMarqueService, MarqueService>();
-// TODO Membre A : builder.Services.AddScoped<IModeleService, ModeleService>();
+builder.Services.AddScoped<IVoitureService, VoitureService>();
+builder.Services.AddScoped<IMarqueService, MarqueService>();
+builder.Services.AddScoped<IModeleService, ModeleService>();
 // TODO Membre B : builder.Services.AddScoped<IClientService, ClientService>();
 
 var app = builder.Build();
