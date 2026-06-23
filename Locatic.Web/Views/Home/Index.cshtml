@@ -2,36 +2,38 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome to Locatic</h1>
-    <p>Use the navigation menu to see the vehicle catalogue, add brands, or add models.</p>
-</div>
+<div class="home-hero">
+    <div class="container hero-content text-white text-center">
+        <h1 class="display-4">Welcome to Locatic</h1>
+        <p>Use the navigation menu to see the vehicle catalogue, add brands, or add models.</p>
 
-<div class="row mt-4">
-    <div class="col-md-4 mb-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Voitures</h5>
-                <p class="card-text">Voir la liste des voitures, créer, modifier ou supprimer une voiture.</p>
-                <a class="btn btn-primary" asp-controller="Voitures" asp-action="Index">Aller aux voitures</a>
+        <div class="row mt-4">
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Voitures</h5>
+                        <p class="card-text">Voir la liste des voitures, créer, modifier ou supprimer une voiture.</p>
+                        <a class="btn btn-primary" asp-controller="Voitures" asp-action="Index">Aller aux voitures</a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-4 mb-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Marques</h5>
-                <p class="card-text">Ajouter et voir les marques de véhicules.</p>
-                <a class="btn btn-primary" asp-controller="Marques" asp-action="Index">Aller aux marques</a>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Marques</h5>
+                        <p class="card-text">Ajouter et voir les marques de véhicules.</p>
+                        <a class="btn btn-primary" asp-controller="Marques" asp-action="Index">Aller aux marques</a>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-4 mb-3">
-        <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">Modèles</h5>
-                <p class="card-text">Ajouter et voir les modèles associés aux marques.</p>
-                <a class="btn btn-primary" asp-controller="Modeles" asp-action="Index">Aller aux modèles</a>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Modèles</h5>
+                        <p class="card-text">Ajouter et voir les modèles associés aux marques.</p>
+                        <a class="btn btn-primary" asp-controller="Modeles" asp-action="Index">Aller aux modèles</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

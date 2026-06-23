@@ -41,6 +41,7 @@ public class ModelesController : Controller
         }
 
         await _modeleService.CreateAsync(modele);
+        TempData["SuccessMessage"] = "Le modèle a été ajouté avec succès.";
         return RedirectToAction("Index");
     }
 }
