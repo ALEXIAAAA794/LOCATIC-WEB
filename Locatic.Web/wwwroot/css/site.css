@@ -1,22 +1,167 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    background-color: #0f0f0f;
+    color: #f5f5f5;
+    margin-bottom: 60px;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* NAVBAR */
+
+.navbar {
+    background-color: #181818 !important;
+    border-bottom: 1px solid #2a2a2a !important;
+}
+
+.navbar-brand {
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+
+.nav-link {
+    color: #d9d9d9 !important;
+}
+
+.nav-link:hover {
+    color: #ffffff !important;
+}
+
+/* TITRES */
+
+h1, h2, h3, h4, h5, h6 {
+    color: white;
+    font-weight: 600;
+}
+
+/* TABLEAUX */
+
+.table {
+    color: #f5f5f5;
+}
+
+.table thead {
+    border-bottom: 2px solid #333;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: #181818;
+}
+
+.table-striped tbody tr:nth-of-type(even) {
+    background-color: #131313;
+}
+
+/* FORMULAIRES */
+
+.form-control,
+.form-select {
+    background-color: #1d1d1d;
+    border: 1px solid #333;
+    color: white;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: #1d1d1d;
+    color: white;
+    border-color: #555;
+    box-shadow: none;
+}
+
+/* BOUTONS */
+
+.btn-primary {
+    background-color: white;
+    color: black;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #dcdcdc;
+    color: black;
+}
+
+.btn-secondary {
+    background-color: #2c2c2c;
+    border: none;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #3a3a3a;
+}
+
+.btn-warning {
+    background-color: #ffffff;
+    color: black;
+    border: none;
+}
+
+.btn-warning:hover {
+    background-color: #dcdcdc;
+}
+
+.btn-danger {
+    background-color: #2b2b2b;
+    color: white;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #404040;
+}
+
+/* CARTES */
+
+.card {
+    background-color: #181818;
+    border: 1px solid #2d2d2d;
+    border-radius: 12px;
+    color: white;
+}
+
+/* LIENS */
+
+a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #d6d6d6;
+}
+
+/* FOOTER */
+
+.footer {
+    background-color: #181818;
+    color: #9f9f9f;
+    border-top: 1px solid #2a2a2a;
+}
+
+/* ERREURS */
+
+.text-danger {
+    color: #ffb3b3 !important;
+}
+
+/* HR */
+
+hr {
+    border-color: #333;
 }
