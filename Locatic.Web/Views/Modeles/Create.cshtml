@@ -2,25 +2,11 @@
 
 @{
     ViewData["Title"] = "Créer un modèle";
-    var marques = ViewData["Marques"] as IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem>;
-    bool hasMarques = marques != null && marques.Any();
 }
 
 <h1>Créer un modèle</h1>
 
-@if (!hasMarques)
-{
-    <div class="alert alert-warning">
-        Il n'y a pas de marque disponible pour associer ce modèle.
-        <a asp-controller="Marques" asp-action="Create" class="alert-link">Créer une marque</a> d'abord.
-    </div>
-}
-
 <form asp-action="Create" method="post" class="row g-3">
-    @Html.AntiForgeryToken()
-    <div class="col-12">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-    </div>
     <div class="col-md-6">
         <label asp-for="Nom" class="form-label"></label>
         <input asp-for="Nom" class="form-control" />
@@ -28,13 +14,11 @@
     </div>
     <div class="col-md-6">
         <label asp-for="MarqueId" class="form-label">Marque</label>
-        <select asp-for="MarqueId" class="form-select" asp-items="@(ViewData["Marques"] as SelectList)">
-            <option value="">-- Choisir une marque --</option>
-        </select>
+        <select asp-for="MarqueId" class="form-select" asp-items="@(ViewData["Marques"] as SelectList)"></select>
         <span asp-validation-for="MarqueId" class="text-danger"></span>
     </div>
     <div class="col-12">
-        <button type="submit" class="btn btn-primary" @(hasMarques ? string.Empty : "disabled")>Ajouter</button>
+        <button type="submit" class="btn btn-primary">Ajouter</button>
         <a class="btn btn-secondary" asp-action="Index">Retour</a>
     </div>
 </form>

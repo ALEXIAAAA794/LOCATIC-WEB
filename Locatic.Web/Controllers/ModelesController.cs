@@ -26,13 +26,16 @@ public class ModelesController : Controller
     {
         var marques = await _marqueService.GetAllAsync();
         ViewData["Marques"] = new SelectList(marques, "Id", "Nom");
-        return View();
+        return View(new Modele());
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(Modele modele)
     {
+        // Fix : EF Core invalide la propriété de navigation Marque qui est null
+        ModelState.Remove("Marque");
+
         if (!ModelState.IsValid)
         {
             var marques = await _marqueService.GetAllAsync();
