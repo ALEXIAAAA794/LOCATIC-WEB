@@ -17,11 +17,11 @@ builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<IVoitureService, VoitureService>();
 builder.Services.AddScoped<IMarqueService, MarqueService>();
 builder.Services.AddScoped<IModeleService, ModeleService>();
-// TODO Membre B : builder.Services.AddScoped<IClientService, ClientService>();
+builder.Services.AddScoped<IClientService, ClientService>();
 
 var app = builder.Build();
 
-// Appliquer les migrations et le seed au démarrage
+// Appliquer les migrations au démarrage
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -29,10 +29,18 @@ using (var scope = app.Services.CreateScope())
 }
 
 if (!app.Environment.IsDevelopment())
+{
     app.UseExceptionHandler("/Home/Error");
+    app.UseHsts();
+}
 
+app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
-app.MapDefaultControllerRoute();
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

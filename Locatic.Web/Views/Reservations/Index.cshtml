@@ -1,0 +1,62 @@
+@model IEnumerable<Locatic.Web.Models.Reservation>
+
+@{
+    ViewData["Title"] = "Réservations";
+}
+
+<h1>Réservations</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">
+        Nouvelle réservation
+    </a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Client</th>
+            <th>Voiture</th>
+            <th>Date début</th>
+            <th>Date fin</th>
+            <th>Montant</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var reservation in Model)
+    {
+        <tr>
+            <td>
+                @reservation.Client.Prenom @reservation.Client.Nom
+            </td>
+
+            <td>
+                @reservation.Voiture.Modele.Marque.Nom
+                @reservation.Voiture.Modele.Nom
+                (@reservation.Voiture.Immatriculation)
+            </td>
+
+            <td>
+                @reservation.DateDebut.ToShortDateString()
+            </td>
+
+            <td>
+                @reservation.DateFin.ToShortDateString()
+            </td>
+
+            <td>
+                @reservation.MontantTotal €
+            </td>
+
+            <td>
+                <a asp-action="Delete"
+                   asp-route-id="@reservation.Id"
+                   class="btn btn-danger btn-sm">
+                    Supprimer
+                </a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

@@ -1,0 +1,56 @@
+@model Locatic.Web.Models.Reservation
+
+@{
+    ViewData["Title"] = "Supprimer une réservation";
+}
+
+<h1>Supprimer une réservation</h1>
+
+<h3 class="text-danger">
+    Confirmer la suppression ?
+</h3>
+
+<hr />
+
+<dl class="row">
+
+    <dt class="col-sm-3">Client</dt>
+    <dd class="col-sm-9">
+        @Model.Client.Prenom @Model.Client.Nom
+    </dd>
+
+    <dt class="col-sm-3">Voiture</dt>
+    <dd class="col-sm-9">
+        @Model.Voiture.Modele.Marque.Nom
+        @Model.Voiture.Modele.Nom
+        (@Model.Voiture.Immatriculation)
+    </dd>
+
+    <dt class="col-sm-3">Début</dt>
+    <dd class="col-sm-9">
+        @Model.DateDebut.ToShortDateString()
+    </dd>
+
+    <dt class="col-sm-3">Fin</dt>
+    <dd class="col-sm-9">
+        @Model.DateFin.ToShortDateString()
+    </dd>
+
+</dl>
+
+<form asp-action="Delete">
+
+    <input type="hidden"
+           asp-for="Id" />
+
+    <button type="submit"
+            class="btn btn-danger">
+        Supprimer
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Annuler
+    </a>
+
+</form>
