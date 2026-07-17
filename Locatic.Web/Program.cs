@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews();
 
 // SQLite via EF Core
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=locatic.db"));
+    options.UseSqlite("Data Source=/data/locatic.db"));
 
 // Injection des services et du repository générique
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
