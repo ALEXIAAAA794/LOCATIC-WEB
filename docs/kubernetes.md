@@ -1,33 +1,79 @@
 ﻿# Déploiement Kubernetes
 
-## Ressources utilisées
+## Ressources présentes
 
-Le déploiement Kubernetes de Locatic doit inclure :
+Le dépôt contient des manifests Kubernetes dans le dossier `kubernetes/` :
 
-- un Deployment pour l’application ASP.NET Core
-- un Deployment pour Nginx
-- un Service exposant Nginx
-- un PersistentVolumeClaim pour SQLite
-- des probes de santé
-- des variables d’environnement configurables
+- `kubernetes/namespace.yaml`
+- `kubernetes/pvc.yaml`
+- `kubernetes/deployment.yaml`
+- `kubernetes/service.yaml`
 
-## Services exposés
+Il contient aussi une version Terraform de ces ressources dans `terraform/main.tf`.
 
-L’accès utilisateur doit passer par Nginx. L’application Locatic reste derrière le reverse proxy.
+## Ressources déclarées
 
-## Stockage SQLite
+### Namespace
 
-La base SQLite est stockée dans un volume persistant monté dans le pod applicatif.
+- `locatic`
 
-## Configuration Nginx
+### PersistentVolumeClaim
 
-Nginx reçoit les requêtes HTTP et les redirige vers l’application ASP.NET Core.
+- `sqlite-pvc`
+- accessModes : `ReadWriteOnce`
+- storage request : `1Gi`
 
-## Architecture
+### Deployment
 
-Le déploiement sépare :
+Nom : `locatic-web`
 
-- l’entrée utilisateur : Nginx
-- l’application métier : Locatic
-- la persistance : SQLite
-- la supervision : Prometheus et Grafana
+Conteneur :
+
+- image : `locatic-web:test1` dans `kubernetes/deployment.yaml`
+- port : `8080`
+- env `ASPNETCORE_URLS=http://+:8080`
+- mount `/data` sur `sqlite-storage`
+- readiness/liveness probes sur `/`
+
+### Service
+
+Nom : `locatic-web`
+
+- selector : `app: locatic-web`
+- port `80` cible `8080`
+- type : `NodePort`
+
+## Points d’attention
+
+- Le manifest `kubernetes/deployment.yaml` utilise l’image `locatic-web:test1`.
+- Le Terraform `terraform/main.tf` utilise la variable `image` avec `locatic-web:latest` par défaut.
+- `imagePullPolicy` est défini sur `Never` dans Terraform, ce qui implique que l’image doit être disponible localement dans minikube.
+
+## Absence actuelle de Nginx
+
+Le dépôt ne contient pas de manifest Nginx. L’accès est donc assuré directement via le service `locatic-web`.
+
+## Utilisation
+
+Pour tester les manifests Kubernetes :
+
+```bash
+kubectl apply -f kubernetes/namespace.yaml
+kubectl apply -f kubernetes/pvc.yaml
+kubectl apply -f kubernetes/deployment.yaml
+kubectl apply -f kubernetes/service.yaml
+```
+
+Puis vérifier :
+
+```bash
+kubectl get pods -n locatic
+kubectl get svc -n locatic
+kubectl get pvc -n locatic
+```
+
+Et exposer le service localement :
+
+```bash
+kubectl port-forward svc/locatic-web 8080:80 -n locatic
+```

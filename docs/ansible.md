@@ -1,26 +1,51 @@
 ﻿# Documentation Ansible
 
-## Rôle du playbook
+## Objectif
 
-Ansible orchestre le déploiement local entre Terraform et Kubernetes. Il rend la séquence plus reproductible que des commandes manuelles.
+Le playbook `ansible/playbook.yml` orchestre l’environnement DevOps local en établissant la chaîne entre Terraform, Kubernetes et Docker.
 
-## Étapes orchestrées
+## Contenu réel
 
-Le playbook doit :
+Le playbook contient une liste de rôles :
 
-1. vérifier que minikube et kubectl sont disponibles
-2. récupérer les outputs Terraform
-3. préparer les variables de déploiement
-4. appliquer ou mettre à jour les ressources Kubernetes
+- `docker`
+- `kubernetes`
+- `terraform`
 
-## Dépendance aux outputs Terraform
+Chaque rôle est aujourd’hui centré sur la vérification des outils :
 
-Le playbook s’appuie sur les informations fournies par Terraform, comme :
+- `ansible/roles/docker/tasks/main.yml` vérifie `docker --version`
+- `ansible/roles/kubernetes/tasks/main.yml` vérifie `kubectl version --client`
+- `ansible/roles/terraform/tasks/main.yml` vérifie `terraform version`
 
-- le namespace
-- le nom du PVC SQLite
-- d’autres paramètres de configuration
+## Ce qui est vérifié
 
-## Intérêt
+- la présence de Docker
+- la présence de kubectl
+- la présence de Terraform
 
-Ansible permet d’automatiser la chaîne de déploiement et de limiter les erreurs de saisie manuelle.
+## Usage
+
+Lancer le playbook depuis la racine du dépôt :
+
+```bash
+ansible-playbook ansible/playbook.yml
+```
+
+## Limite actuelle
+
+Le playbook ne déploie pas automatiquement les ressources Kubernetes ou Terraform. Il doit être enrichi avec des tâches qui :
+
+- initialisent et appliquent Terraform
+- injectent les variables de configuration
+- déploient les manifests Kubernetes ou gèrent les ressources par Terraform
+
+## Recommandation
+
+Pour une automatisation complète, ajouter des tâches Ansible qui réalisent :
+
+- `terraform init`
+- `terraform apply`
+- `kubectl apply -f kubernetes/`
+
+Cela rendra la chaîne DevOps réellement reproductible sur le poste local.

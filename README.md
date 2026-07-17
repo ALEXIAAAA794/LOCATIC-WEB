@@ -1,6 +1,6 @@
 ﻿# Locatic — application de location de voitures
 
-Ce dépôt contient le projet Locatic, une application ASP.NET Core MVC avec une base SQLite. Le but est de préparer cette application pour une chaîne DevOps locale comprenant Docker, GitHub Actions, Terraform, Ansible et Kubernetes.
+Ce dépôt contient Locatic, une application ASP.NET Core MVC avec SQLite, conçue pour une validation DevOps locale et un déploiement Kubernetes minimal.
 
 ## Prérequis
 
@@ -25,6 +25,12 @@ Locatic.Web/
   ViewModels/
   Views/
   Program.cs
+.github/workflows/ci.yml
+Dockerfile
+terraform/
+ansible/
+kubernetes/
+monitoring/
 ```
 
 ## Démarrage rapide
@@ -35,7 +41,29 @@ dotnet restore
 dotnet run
 ```
 
-L’application applique les migrations EF Core et crée la base SQLite au démarrage.
+## Build Docker local
+
+```bash
+docker build -t locatic-web:latest .
+```
+
+## CI/CD
+
+Le pipeline GitHub Actions est défini dans `.github/workflows/ci.yml` et exécute :
+
+- checkout du code
+- installation de .NET 8
+- restauration avec `dotnet restore Locatic.sln`
+- compilation avec `dotnet build Locatic.sln --configuration Release --no-restore`
+- publication de `Locatic.Web/Locatic.Web.csproj`
+- construction de l’image Docker `locatic-web:latest`
+
+## Infrastructure
+
+- `terraform/` : ressources Kubernetes gérées par Terraform
+- `ansible/` : playbook et rôles de vérification
+- `kubernetes/` : manifests Kubernetes déclaratifs
+- `monitoring/` : scripts de supervision
 
 ## Documentation
 
@@ -45,7 +73,7 @@ L’application applique les migrations EF Core et crée la base SQLite au déma
 - docs/terraform.md
 - docs/ansible.md
 - docs/kubernetes.md
-- docs/helm.md
 - docs/monitoring.md
+- docs/helm.md
 - docs/exploitation.md
 - docs/preuves/README.md
