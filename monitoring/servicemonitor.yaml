@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: locatic-web
+  namespace: monitoring
+  labels:
+    release: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: locatic-web
+
+  namespaceSelector:
+    matchNames:
+      - locatic
+
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 15s

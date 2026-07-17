@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: locatic-web
-        image: locatic-web:latest
+        image: locatic-web:test1
         imagePullPolicy: Never
 
         ports:

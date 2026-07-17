@@ -2,14 +2,19 @@ using Microsoft.EntityFrameworkCore;
 using Locatic.Web.Data;
 using Locatic.Web.Repositories;
 using Locatic.Web.Services;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
-// SQLite via EF Core
+// Choix du chemin de la base SQLite selon l'environnement
+var dbPath = builder.Environment.IsDevelopment()
+    ? "Data Source=locatic.db"
+    : "Data Source=/data/locatic.db";
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=/data/locatic.db"));
+    options.UseSqlite(dbPath));
 
 // Injection des services et du repository générique
 builder.Services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
@@ -34,13 +39,21 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
+// Active les métriques HTTP Prometheus
+app.UseHttpMetrics();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Expose les métriques sur /metrics
+app.MapMetrics();
+
+app.MapGet("/ping", () => "OK");
 
 app.Run();
