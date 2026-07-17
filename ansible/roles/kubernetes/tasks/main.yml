@@ -1,0 +1,9 @@
+---
+- name: Vérifier kubectl
+  command: kubectl version --client
+  register: kubectl_version
+  changed_when: false
+
+- name: Afficher la version kubectl
+  debug:
+    var: kubectl_version.stdout

@@ -1,0 +1,9 @@
+---
+- name: Configuration de l'environnement DevOps
+  hosts: local
+  become: false
+
+  roles:
+    - docker
+    - kubernetes
+    - terraform

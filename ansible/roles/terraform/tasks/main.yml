@@ -1,0 +1,9 @@
+---
+- name: Vérifier Terraform
+  command: terraform version
+  register: terraform_version
+  changed_when: false
+
+- name: Afficher la version Terraform
+  debug:
+    var: terraform_version.stdout
