@@ -1,38 +1,32 @@
-# Monitoring Prometheus et Grafana
+﻿# Monitoring Prometheus et Grafana
 
 ## Services monitorés
 
-Le déploiement de Locatic doit permettre de surveiller au moins :
+Le déploiement doit surveiller :
 
-- l’application web Locatic
+- l’application Locatic
 - Nginx
 - le stockage SQLite
-- les composants de monitoring eux-mêmes
+- les composants de monitoring
 
 ## Métriques suivies
 
-Prometheus doit collecter des métriques permettant de savoir si :
+Prometheus doit collecter des métriques sur :
 
-- les pods sont prêts
-- les services répondent
-- l’application est disponible
-- un problème de santé ou de performance apparaît
+- la disponibilité des pods
+- la disponibilité des services
+- l’état de l’application
+- la santé du stockage
 
-Grafana sert ensuite à visualiser ces éléments dans un tableau de bord lisible.
+## Accès
 
-## Accès à Prometheus
+Prometheus et Grafana doivent être accessibles localement via port-forward ou via les services exposés.
 
-Prometheus doit être accessible localement depuis la machine de déploiement. Il concentre les données collectées sur le cluster et sert de source de truth pour la supervision.
+## Dashboard
 
-## Accès à Grafana
+Le dashboard Grafana doit permettre de vérifier rapidement :
 
-Grafana permet de transformer ces métriques en indicateurs visuels. Le dashboard doit être pensé pour montrer rapidement si l’application, Nginx et le stockage fonctionnent correctement.
-
-## Lecture du dashboard
-
-Un observateur doit pouvoir répondre rapidement à ces questions :
-
-- l’interface Locatic est-elle accessible ?
-- Nginx route-t-il correctement les requêtes ?
-- le volume SQLite est-il bien monté ?
-- le monitoring collecte bien les métriques attendues ?
+- si Locatic est disponible
+- si Nginx route correctement
+- si le volume SQLite est monté
+- si la collecte de métriques fonctionne

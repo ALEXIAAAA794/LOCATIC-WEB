@@ -1,40 +1,40 @@
-# Documentation Terraform
+﻿# Documentation Terraform
 
 ## Objectif
 
-Terraform est utilisé pour préparer l’infrastructure locale nécessaire au déploiement de Locatic sur minikube. Son rôle est de créer des composants de base qui seront ensuite consommés par Ansible et par les manifests Kubernetes.
+Terraform prépare l’infrastructure locale nécessaire au déploiement de Locatic sur minikube.
 
-## Ressources que Terraform doit gérer
+## Ressources gérées
 
-La configuration Terraform doit pouvoir gérer au minimum :
+La configuration doit gérer au minimum :
 
-- un namespace Kubernetes dédié à l’application Locatic
-- un PersistentVolumeClaim pour la base SQLite
-- des variables de configuration utiles au déploiement
-- des outputs qui seront repris par Ansible
+- le namespace Kubernetes
+- un PersistentVolumeClaim pour SQLite
+- les variables de déploiement
+- les outputs utiles pour Ansible
 
 ## Variables attendues
 
-Les variables Terraform doivent permettre de personnaliser au moins :
+Les variables doivent inclure :
 
 - le nom du namespace
-- le nom du stockage persistant
+- le nom du storage
 - la taille du volume
-- l’image à déployer et son tag si vous choisissez de les injecter depuis Terraform
+- l’image et le tag si utilisé
 
 ## Outputs utiles
 
-Les outputs Terraform doivent exposer les informations qui seront utiles à la suite du déploiement. Par exemple :
+Les outputs doivent exposer :
 
-- le namespace à utiliser
-- le nom du PVC SQLite
-- les valeurs de configuration partagées avec les manifests
+- le namespace
+- le nom du PVC
+- d’autres paramètres de configuration
 
 ## Gestion de l’état
 
-L’état Terraform ne doit pas être versionné. Il doit rester local à la machine de déploiement. Cela évite de committer des données sensibles ou des informations propres à la machine locale.
+L’état Terraform ne doit pas être versionné et doit rester local.
 
-Le workflow recommandé est :
+## Commandes
 
 ```bash
 terraform init
@@ -42,5 +42,3 @@ terraform validate
 terraform plan
 terraform apply
 ```
-
-L’état généré doit donc être ignoré par Git et conservé localement.

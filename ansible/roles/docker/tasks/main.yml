@@ -1,0 +1,9 @@
+---
+- name: Vérifier Docker
+  command: docker --version
+  register: docker_version
+  changed_when: false
+
+- name: Afficher la version Docker
+  debug:
+    var: docker_version.stdout

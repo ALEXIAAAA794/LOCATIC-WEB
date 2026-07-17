@@ -1,33 +1,33 @@
-# Déploiement Kubernetes
+﻿# Déploiement Kubernetes
 
 ## Ressources utilisées
 
-Le déploiement Kubernetes de Locatic doit contenir au minimum :
+Le déploiement Kubernetes de Locatic doit inclure :
 
 - un Deployment pour l’application ASP.NET Core
-- un Deployment ou configuration dédiée pour Nginx
-- un Service qui expose l’entrée utilisateur
-- un volume persistant pour la base SQLite
-- des probes de santé pour contrôler l’état du pod
+- un Deployment pour Nginx
+- un Service exposant Nginx
+- un PersistentVolumeClaim pour SQLite
+- des probes de santé
 - des variables d’environnement configurables
 
 ## Services exposés
 
-L’accès utilisateur passe par Nginx. L’application Locatic reste donc derrière le reverse proxy, ce qui correspond à l’architecture attendue.
+L’accès utilisateur doit passer par Nginx. L’application Locatic reste derrière le reverse proxy.
 
 ## Stockage SQLite
 
-Le fichier SQLite doit être monté depuis un PersistentVolumeClaim dans le pod applicatif. Cela permet de conserver l’état métier même si le pod est redémarré ou remplacé.
+La base SQLite est stockée dans un volume persistant monté dans le pod applicatif.
 
 ## Configuration Nginx
 
-Nginx est chargé de recevoir les requêtes HTTP et de les transmettre à l’application ASP.NET Core. Sa configuration doit rester simple, lisible et adaptée à un environnement local de test.
+Nginx reçoit les requêtes HTTP et les redirige vers l’application ASP.NET Core.
 
-## Choix d’architecture
+## Architecture
 
-Le déploiement vise à séparer clairement :
+Le déploiement sépare :
 
 - l’entrée utilisateur : Nginx
 - l’application métier : Locatic
-- la persistance : SQLite sur volume
+- la persistance : SQLite
 - la supervision : Prometheus et Grafana

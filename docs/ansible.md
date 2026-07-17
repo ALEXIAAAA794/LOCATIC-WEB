@@ -1,29 +1,26 @@
-# Documentation Ansible
+﻿# Documentation Ansible
 
 ## Rôle du playbook
 
-Ansible est utilisé comme couche d’orchestration locale entre Terraform et Kubernetes. Son rôle est de rendre le déploiement de Locatic plus reproductible et moins manuel.
+Ansible orchestre le déploiement local entre Terraform et Kubernetes. Il rend la séquence plus reproductible que des commandes manuelles.
 
 ## Étapes orchestrées
 
-Le playbook doit idéalement :
+Le playbook doit :
 
-1. vérifier la présence de minikube et de kubectl
-2. vérifier que le namespace de déploiement existe
-3. récupérer les informations produites par Terraform
-4. préparer les variables nécessaires à l’application
-5. appliquer ou mettre à jour les ressources Kubernetes de Locatic
+1. vérifier que minikube et kubectl sont disponibles
+2. récupérer les outputs Terraform
+3. préparer les variables de déploiement
+4. appliquer ou mettre à jour les ressources Kubernetes
 
 ## Dépendance aux outputs Terraform
 
-Le playbook dépend directement des outputs Terraform. Par exemple, il peut avoir besoin de :
+Le playbook s’appuie sur les informations fournies par Terraform, comme :
 
-- le namespace à utiliser
+- le namespace
 - le nom du PVC SQLite
-- les paramètres de configuration de l’application
+- d’autres paramètres de configuration
 
-C’est pourquoi Terraform est exécuté avant Ansible dans la séquence de déploiement.
+## Intérêt
 
-## Intérêt du choix
-
-Ansible permet d’éviter de lancer à la main une suite de commandes Kubernetes. Pour un projet comme Locatic, cela rend le déploiement plus lisible et surtout plus facile à reproduire lors d’une nouvelle installation.
+Ansible permet d’automatiser la chaîne de déploiement et de limiter les erreurs de saisie manuelle.

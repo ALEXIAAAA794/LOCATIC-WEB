@@ -1,4 +1,4 @@
-# Architecture du projet
+﻿# Architecture du projet
 
 ## Vue d’ensemble
 
@@ -9,8 +9,6 @@ Locatic est une application web ASP.NET Core MVC dédiée à la gestion d’une 
 - Voitures
 - Clients
 - Réservations
-
-L’application actuelle est déjà orientée autour d’un modèle de consultation et de création de données. Les contrôleurs principaux, comme les contrôleurs de voitures et de réservations, mettent en œuvre une logique CRUD et une logique métier spécifique aux réservations.
 
 ## Composition applicative réelle
 
@@ -23,89 +21,57 @@ Le projet est structuré de façon claire en couches :
 - ViewModels : objets utilisés pour les vues de création et d’édition
 - Views : pages Razor affichées à l’utilisateur
 
-Par exemple, les réservations ne se contentent pas d’être stockées : elles sont soumises à deux règles métier visibles dans le service de réservation :
+Les réservations sont soumises à des règles métier visibles dans le service de réservation :
 
 - la date de fin ne peut pas être antérieure à la date de début
 - une voiture ne peut pas être réservée deux fois sur une même période
 
-## Pourquoi cette application est adaptée à un déploiement DevOps
-
-Le projet est intéressant à déployer parce qu’il possède déjà :
-
-- un cœur applicatif simple à isoler dans un conteneur
-- une base SQLite facile à externaliser via un volume
-- une interface web MVC qui peut être exposée derrière un reverse proxy
-- des données métier cohérentes à maintenir malgré les redémarrages
-
 ## Rôle de GitHub Actions
 
-GitHub Actions doit servir à valider le dépôt automatiquement avant toute intégration. Dans la logique du mini-projet, il devra :
+GitHub Actions valide automatiquement le dépôt avant toute intégration. Il doit :
 
 - récupérer le code
 - restaurer les dépendances
 - compiler l’application
-- exécuter les éventuels tests
+- exécuter les tests
 - construire une image Docker
-- préparer la publication de cette image depuis la branche main
-
-Le pipeline ne doit pas remplacer le déploiement local : il doit uniquement valider l’état du dépôt.
+- préparer la publication de l’image depuis main
 
 ## Rôle de Terraform
 
-Terraform est utilisé pour préparer l’infrastructure locale nécessaire au déploiement. Dans ce projet, il doit permettre de définir :
+Terraform prépare l’infrastructure locale nécessaire au déploiement. Il définit :
 
 - un namespace Kubernetes dédié à Locatic
 - un stockage persistant pour la base SQLite
-- des variables de configuration réutilisables par Ansible
-- un état local propre, non versionné
-
-L’intérêt est de garder l’infrastructure déclarative et reproductible sur la machine de l’étudiant.
+- des variables réutilisables par Ansible
+- un état local non versionné
 
 ## Rôle d’Ansible
 
-Ansible sert d’orchestrateur entre la préparation Terraform et le déploiement Kubernetes. Il permet de :
+Ansible orchestre le déploiement local entre Terraform et Kubernetes. Il permet de :
 
-- vérifier la présence de minikube et des outils nécessaires
-- récupérer les valeurs générées par Terraform
-- préparer les manifests ou variables de déploiement
-- appliquer les ressources Kubernetes de façon automatisée
+- vérifier la présence de minikube
+- récupérer les outputs Terraform
+- préparer les variables de déploiement
+- appliquer ou mettre à jour les ressources Kubernetes
 
-## Rôle du déploiement Kubernetes
+## Rôle de Kubernetes
 
-Kubernetes est utilisé pour exécuter l’application dans un environnement conteneurisé. Le but est de garantir que :
+Kubernetes exécute l’application conteneurisée. L’objectif est de :
 
-- l’application tourne de façon stable
-- l’accès utilisateur passe par un point d’entrée défini
-- les données persistantes restent disponibles en cas de redémarrage de pod
-- les modifications peuvent être déployées de façon maîtrisée
+- faire tourner Locatic de façon stable
+- exposer l’interface via Nginx
+- conserver la base SQLite sur un volume persistant
+- mettre à jour les ressources de façon contrôlée
 
 ## Rôle de Nginx
 
-Nginx joue ici le rôle de reverse proxy. Il est le point d’entrée que l’utilisateur voit, tandis que l’application ASP.NET Core reste derrière lui.
-
-Ce choix est cohérent avec l’architecture demandée :
-
-- séparation nette entre l’interface d’entrée et l’application métier
-- meilleure lisibilité de l’architecture
-- parcours utilisateur plus simple à superviser
+Nginx joue le rôle de reverse proxy. L’accès utilisateur passe par Nginx, tandis que l’application reste derrière ce point d’entrée.
 
 ## Rôle du volume SQLite
 
-La base SQLite est un élément central du projet. Puisqu’elle est utilisée localement aujourd’hui par EF Core, elle doit être rendue persistante dans le déploiement Kubernetes via un volume monté dans le pod applicatif.
-
-Le volume permet de garantir que :
-
-- les données ne sont pas perdues lors d’un redémarrage du pod
-- l’application conserve son état métier
-- le chemin du fichier SQLite peut être défini proprement dans le conteneur
+Le fichier SQLite doit être monté depuis un PersistentVolumeClaim dans le pod applicatif afin de préserver les données entre les redémarrages.
 
 ## Rôle du monitoring
 
-Prometheus et Grafana complètent l’architecture en donnant une visibilité sur l’état du système. Ils permettent de suivre :
-
-- la disponibilité de l’application
-- la santé de Nginx
-- l’état du stockage SQLite
-- l’activité des composants déployés
-
-Le monitoring est ici un outil de diagnostic important, surtout quand l’application est déplacée vers un environnement Kubernetes local.
+Prometheus et Grafana fournissent une visibilité sur l’état de l’architecture : disponibilité, santé du service et état du stockage.
