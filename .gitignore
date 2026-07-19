@@ -9,6 +9,27 @@ obj/
 *.db-wal
 Migrations/
 
+## Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+## Environnement
+.env
+.env.*
+
+## Secrets
+*.pem
+*.key
+*.pfx
+*.p12
+
 ## OS
 .DS_Store
 Thumbs.db
