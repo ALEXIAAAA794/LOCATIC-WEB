@@ -2,50 +2,126 @@
 
 ## Objectif
 
-Le playbook `ansible/playbook.yml` orchestre l’environnement DevOps local en établissant la chaîne entre Terraform, Kubernetes et Docker.
+Ansible est utilisé pour préparer l'environnement DevOps local du projet **Locatic**.
 
-## Contenu réel
+Le playbook principal orchestre les différents rôles Ansible du projet afin de vérifier que les outils nécessaires au déploiement sont correctement installés et disponibles sur la machine.
 
-Le playbook contient une liste de rôles :
+---
+
+## Structure
+
+Le playbook principal est situé dans :
+
+```text
+ansible/playbook.yml
+```
+
+Son contenu est le suivant :
+
+```yaml
+---
+- name: Configuration de l'environnement DevOps
+  hosts: local
+  become: false
+
+  roles:
+    - docker
+    - kubernetes
+    - terraform
+```
+
+Le playbook exécute successivement les trois rôles :
 
 - `docker`
 - `kubernetes`
 - `terraform`
 
-Chaque rôle est aujourd’hui centré sur la vérification des outils :
+---
 
-- `ansible/roles/docker/tasks/main.yml` vérifie `docker --version`
-- `ansible/roles/kubernetes/tasks/main.yml` vérifie `kubectl version --client`
-- `ansible/roles/terraform/tasks/main.yml` vérifie `terraform version`
+## Description des rôles
 
-## Ce qui est vérifié
+### Rôle Docker
 
-- la présence de Docker
-- la présence de kubectl
-- la présence de Terraform
+Le rôle **docker** vérifie que Docker est installé et accessible.
 
-## Usage
+Commande exécutée :
 
-Lancer le playbook depuis la racine du dépôt :
+```bash
+docker --version
+```
+
+---
+
+### Rôle Kubernetes
+
+Le rôle **kubernetes** vérifie que l'outil **kubectl** est installé.
+
+Commande exécutée :
+
+```bash
+kubectl version --client
+```
+
+---
+
+### Rôle Terraform
+
+Le rôle **terraform** vérifie que Terraform est correctement installé.
+
+Commande exécutée :
+
+```bash
+terraform version
+```
+
+---
+
+## Exécution
+
+Depuis la racine du projet :
 
 ```bash
 ansible-playbook ansible/playbook.yml
 ```
 
-## Limite actuelle
+Le playbook exécute les différents rôles afin de vérifier la disponibilité des outils nécessaires au projet.
 
-Le playbook ne déploie pas automatiquement les ressources Kubernetes ou Terraform. Il doit être enrichi avec des tâches qui :
+---
 
-- initialisent et appliquent Terraform
-- injectent les variables de configuration
-- déploient les manifests Kubernetes ou gèrent les ressources par Terraform
+## Intégration dans le projet
 
-## Recommandation
+Ansible intervient dans la chaîne DevOps du projet en complément des autres outils.
 
-Pour une automatisation complète, ajouter des tâches Ansible qui réalisent :
+La chaîne de déploiement est la suivante :
 
-- `terraform init`
-- `terraform apply`
-- `kubectl apply -f kubernetes/`
+1. GitHub Actions valide le projet et publie l'image Docker dans GitHub Container Registry (GHCR).
+2. Terraform prépare l'infrastructure Kubernetes locale.
+3. Ansible vérifie que l'environnement de déploiement est correctement configuré.
+4. Kubernetes exécute l'application Locatic.
+5. Prometheus collecte les métriques.
+6. Grafana permet la supervision de l'application.
 
-Cela rendra la chaîne DevOps réellement reproductible sur le poste local.
+---
+
+## Limites actuelles
+
+Dans sa version actuelle, le playbook se limite à vérifier la présence des outils nécessaires au projet.
+
+Il ne réalise pas automatiquement :
+
+- l'initialisation de Terraform ;
+- l'application de l'infrastructure Terraform ;
+- le déploiement des ressources Kubernetes ;
+- les mises à jour de l'application.
+
+---
+
+## Évolutions possibles
+
+Le playbook pourra être enrichi afin d'automatiser davantage le déploiement en ajoutant notamment :
+
+- l'exécution de `terraform init` ;
+- l'exécution de `terraform apply` ;
+- le déploiement automatique des ressources Kubernetes ;
+- des vérifications après déploiement ;
+- des tâches de maintenance et de mise à jour de l'application.

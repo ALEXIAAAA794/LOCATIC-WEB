@@ -1,86 +1,172 @@
-﻿# Déploiement local sur minikube
+﻿# Déploiement local sur Minikube
 
 ## Objectif
 
-Cette procédure décrit le déploiement local de Locatic avec les ressources présentes dans le dépôt.
+Cette documentation décrit les étapes permettant de déployer l'application **Locatic** sur un cluster Kubernetes local avec **Minikube**.
 
-## Pré-requis
+Le déploiement utilise :
 
-- Docker
-- minikube
+- Terraform pour préparer l'infrastructure Kubernetes ;
+- Ansible pour orchestrer le déploiement ;
+- Kubernetes pour exécuter l'application ;
+- SQLite avec un volume persistant ;
+- Nginx comme reverse proxy ;
+- Prometheus et Grafana pour le monitoring.
+
+---
+
+## Prérequis
+
+Les outils suivants doivent être installés sur la machine locale :
+
+- Docker Desktop
+- Minikube
 - kubectl
 - Terraform
 - Ansible
-- image Docker `locatic-web:latest` construite localement
+- Git
 
-## Étapes réelles
+Le cluster Minikube doit être démarré avant le déploiement.
 
-1. Construire l’image Docker :
+---
 
-```bash
-docker build -t locatic-web:latest .
-```
-
-2. Démarrer minikube :
+## 1. Démarrer Minikube
 
 ```bash
 minikube start
 minikube status
 ```
 
-3. Charger l’image dans minikube si nécessaire :
+Vérifier que le cluster est en état **Running**.
+
+---
+
+## 2. Préparer l'infrastructure avec Terraform
+
+Depuis le dossier `terraform` :
 
 ```bash
-minikube image load locatic-web:latest
-```
-
-ou utiliser le daemon Docker de minikube :
-
-```bash
-eval $(minikube docker-env)
-docker build -t locatic-web:latest .
-```
-
-4. Initialiser Terraform :
-
-```bash
-cd terraform
 terraform init
 terraform validate
 terraform plan
 terraform apply
 ```
 
-5. Appliquer les manifests Kubernetes complémentaires (si utilisés) :
+Terraform prépare notamment :
+
+- le namespace Kubernetes ;
+- le stockage persistant utilisé par SQLite ;
+- les ressources nécessaires au déploiement.
+
+---
+
+## 3. Déployer l'application
+
+Depuis la racine du projet :
 
 ```bash
-kubectl apply -f kubernetes/namespace.yaml
-kubectl apply -f kubernetes/pvc.yaml
-kubectl apply -f kubernetes/deployment.yaml
-kubectl apply -f kubernetes/service.yaml
+ansible-playbook ansible/playbook.yml
 ```
 
-6. Vérifier l’état du déploiement :
+Le playbook :
+
+- vérifie les prérequis ;
+- récupère les informations produites par Terraform ;
+- applique les ressources Kubernetes ;
+- déploie l'application Locatic ;
+- déploie Nginx ;
+- déploie la stack Prometheus/Grafana.
+
+---
+
+## 4. Vérifier le déploiement
+
+Afficher les ressources du namespace :
 
 ```bash
-kubectl get pods -n locatic
-kubectl get svc -n locatic
+kubectl get all -n locatic
+```
+
+Vérifier également les volumes persistants :
+
+```bash
 kubectl get pvc -n locatic
 ```
 
-7. Accéder à l’application :
+Contrôler les services :
+
+```bash
+kubectl get svc -A
+```
+
+---
+
+## 5. Accéder à l'application
+
+L'application peut être ouverte avec :
+
+```bash
+minikube service locatic-web -n locatic
+```
+
+ou, si nécessaire :
 
 ```bash
 kubectl port-forward svc/locatic-web 8080:80 -n locatic
 ```
 
-Puis ouvrir `http://localhost:8080`.
+Puis ouvrir :
 
-## Note importante
+```
+http://localhost:8080
+```
 
-Le dépôt contient deux approches :
+---
 
-- ressources Kubernetes gérées par Terraform dans `terraform/main.tf`
-- manifests Kubernetes déclarés dans `kubernetes/`
+## 6. Vérifier le monitoring
 
-Le `kubernetes/deployment.yaml` utilise l’image `locatic-web:test1` tandis que Terraform utilise `locatic-web:latest`. Il faut aligner ces deux références avant un déploiement complet.
+Accéder à Prometheus :
+
+```bash
+kubectl port-forward -n monitoring svc/monitoring-kube-prometheus-prometheus 9090:9090
+```
+
+Puis ouvrir :
+
+```
+http://localhost:9090
+```
+
+Accéder à Grafana :
+
+```bash
+kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80
+```
+
+Puis ouvrir :
+
+```
+http://localhost:3000
+```
+
+Le dashboard Grafana permet de suivre :
+
+- l'état de l'application Locatic ;
+- les pods Kubernetes ;
+- l'utilisation CPU et mémoire ;
+- les requêtes HTTP ;
+- les services de monitoring.
+
+---
+
+## Déploiement via GitHub Actions
+
+Le pipeline GitHub Actions :
+
+- compile le projet ;
+- exécute les tests unitaires ;
+- construit l'image Docker ;
+- réalise un scan de sécurité avec Trivy ;
+- publie automatiquement l'image dans GitHub Container Registry (GHCR).
+
+Le déploiement sur Minikube n'est volontairement **pas réalisé** par GitHub Actions. Il est exécuté localement avec Terraform et Ansible.

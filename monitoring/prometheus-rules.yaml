@@ -1,0 +1,36 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: locatic-alerts
+  namespace: monitoring
+
+spec:
+  groups:
+    - name: locatic.rules
+
+      rules:
+
+        - alert: LocaticDown
+          expr: up{job="locatic-web"} == 0
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Locatic indisponible"
+            description: "L'application Locatic ne répond plus."
+
+        - alert: HighCPU
+          expr: rate(container_cpu_usage_seconds_total[5m]) > 0.8
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "CPU élevée"
+
+        - alert: HighMemory
+          expr: container_memory_usage_bytes > 500000000
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Mémoire élevée"
