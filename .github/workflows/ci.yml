@@ -30,6 +30,9 @@ jobs:
       - name: Build
         run: dotnet build Locatic.sln --configuration Release --no-restore
 
+      - name: Run tests
+        run: dotnet test Locatic.sln --configuration Release --no-build
+
       - name: Publish
         run: dotnet publish Locatic.Web/Locatic.Web.csproj -c Release -o publish --no-build
 
